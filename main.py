@@ -13,7 +13,7 @@ class NeuralNetwork:
         self.weight_hidden1_hidden2 = np.random.uniform(-0.5, 0.5, (n, n))
         self.weight_hidden2_hidden3 = np.random.uniform(-0.5, 0.5, (n, n))
         self.weight_hidden3_output = np.random.uniform(-0.5, 0.5, (11, n))
-
+        print(self.weight_hidden1_hidden2.shape)
         self.bias_input_hidden1 = np.zeros((n, 1))
         self.bias_hidden1_hidden2 = np.zeros((n, 1))
         self.bias_hidden2_hidden3 = np.zeros((n, 1))
