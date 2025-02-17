@@ -87,7 +87,6 @@ class NeuralNetwork:
         self.bias_hidden3_output -= self.learn_rate * delta_output
         
         # Backpropagation hidden3 -> hidden2
-        # delta_hidden = (W.T @ delta_next) * f'(z)
         # self.weight_hidden3_output.T shape: (3844, 11)
         # delta_output shape: (11,)
         delta_hidden3 = (self.weight_hidden3_output.T @ delta_output) * delta_fast_gelu(self.hidden3)  # Shape: (3844,)
@@ -95,20 +94,20 @@ class NeuralNetwork:
         # self.weight_hidden2_hidden3 shape: (3844,)
         # delta_hidden3 shape: (3844,)
         # self.hidden2 shape: (3844,)
-        grad_weight_hidden2_hidden3 = delta_hidden3 * self.hidden2  # Element-wise multiplication
+        grad_weight_hidden2_hidden3 = delta_hidden3 * self.hidden2
         self.weight_hidden2_hidden3 -= self.learn_rate * grad_weight_hidden2_hidden3
         self.bias_hidden2_hidden3 -= self.learn_rate * delta_hidden3
         
         # Backpropagation hidden2 -> hidden1
         # delta_hidden2 shape: (3844,)
         delta_hidden2 = (self.weight_hidden2_hidden3 * delta_hidden3) * delta_fast_gelu(self.hidden2)
-        grad_weight_hidden1_hidden2 = delta_hidden2 * self.hidden1  # Element-wise multiplication
+        grad_weight_hidden1_hidden2 = delta_hidden2 * self.hidden1
         self.weight_hidden1_hidden2 -= self.learn_rate * grad_weight_hidden1_hidden2
         self.bias_hidden1_hidden2 -= self.learn_rate * delta_hidden2
         
         # Backpropagation hidden1 -> convolved
         delta_hidden1 = (self.weight_hidden1_hidden2 * delta_hidden2) * delta_fast_gelu(self.hidden1)
-        grad_weight_input_hidden1 = delta_hidden1 * self.convolved_flat  # Element-wise multiplication
+        grad_weight_input_hidden1 = delta_hidden1 * self.convolved_flat
         self.weight_input_hidden1 -= self.learn_rate * grad_weight_input_hidden1
         self.bias_input_hidden1 -= self.learn_rate * delta_hidden1
         
@@ -154,7 +153,7 @@ class NeuralNetwork:
                 loss = -cp.sum(one_hot_label * cp.log(output + 1e-10))
                 total_loss += loss
                 
-                # Call backward with proper arguments
+                # Call backwardprop
                 self.backward(img, output, one_hot_label)
                 
             print(len(shuffled_indices))
@@ -199,8 +198,6 @@ def main():
     n = 200
     learn_rate = 0.01
     #path = r"D:\ai_projects\projects\data\training\Dessert\2.jpg"
-    # Convert NumPy arrays to CuPy arrays
-
     neural_net = NeuralNetwork(n, learn_rate, size,3)
     if uinput == "train":
         epochs = 10
